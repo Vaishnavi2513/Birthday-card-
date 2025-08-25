@@ -115,64 +115,6 @@
     border-radius:0 0 24px 24px;
   }
 
-  /* Enhanced Door - larger and more prominent */
-  .door {
-    position:absolute;
-    left:60px;
-    bottom:40px;
-    width:120px;
-    height:160px;
-    background:linear-gradient(180deg,#8b5cf6,#7c3aed);
-    border:4px solid #fff;
-    border-radius:12px;
-    z-index:10;
-    cursor:pointer;
-    box-shadow:0 8px 25px rgba(139,92,246,0.4);
-    transition:all 0.3s ease;
-  }
-  .door:hover {
-    transform:scale(1.05);
-    box-shadow:0 12px 35px rgba(139,92,246,0.6);
-  }
-  .door:before {
-    content:"🚪";
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    font-size:40px;
-  }
-  .door.open {
-    background:linear-gradient(180deg,#fbbf24,#f59e0b);
-    box-shadow:0 12px 35px rgba(251,191,36,0.4);
-  }
-  .door.open:before {
-    content:"✨";
-    font-size:48px;
-  }
-
-  /* Welcome message */
-  .welcome {
-    position:absolute;
-    left:200px;
-    bottom:120px;
-    background:#fff;
-    padding:12px 16px;
-    border-radius:16px;
-    border:2px solid #fbbf24;
-    box-shadow:0 8px 25px rgba(0,0,0,0.15);
-    font-weight:600;
-    color:var(--ink);
-    opacity:0;
-    transform:scale(0.8);
-    transition:all 0.3s ease;
-    z-index:11;
-  }
-  .welcome.show {
-    opacity:1;
-    transform:scale(1);
-  }
-
   /* Friendly character */
   .buddy{position:absolute;right:40px;bottom:40px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:10;}
   .buddy .face{width:74px;height:74px;border-radius:50%;background:linear-gradient(180deg,#ffd6e8,#ffc1dc);box-shadow:0 10px 18px rgba(0,0,0,.15);display:grid;place-items:center;font-size:34px}
@@ -195,6 +137,14 @@
   .sticker{width:90px;height:90px;border-radius:16px;background:linear-gradient(180deg,#fff,#ffe6f5);display:grid;place-items:center;cursor:grab;touch-action:none;user-select:none;box-shadow:0 10px 18px rgba(0,0,0,.12);transition:all 0.3s ease;position:relative;z-index:1}
   .sticker:hover{transform:scale(1.05)}
   .sticker.dragging{cursor:grabbing;transform:scale(1.1);z-index:10;box-shadow:0 15px 30px rgba(0,0,0,.2)}
+
+  /* Letter Grid for Name Puzzle */
+  .letter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(45px,1fr));gap:8px;margin:12px 0;max-width:350px}
+  .letter-btn{width:45px;height:45px;border-radius:10px;border:2px solid #ddd;background:#fff;cursor:pointer;font-weight:700;font-size:18px;transition:all 0.3s ease;display:grid;place-items:center}
+  .letter-btn:hover{transform:scale(1.05);border-color:#8f8cff}
+  .letter-btn:active{transform:scale(0.95)}
+  .letter-btn.used{background:#e8fff2;border-color:#66e6a6;color:#2c9b6f;cursor:not-allowed;opacity:0.7}
+  .letter-btn.wrong{background:#ffe6e6;border-color:#ff9999}
 
   /* Puzzle tracker */
   .tracker{max-width:1100px;margin:0 auto 22px;display:flex;flex-wrap:wrap;gap:10px;padding:0 16px}
@@ -222,12 +172,18 @@
   .hint-list li.found{background:linear-gradient(90deg,#f0fff4,#e8fff2);border-left-color:#22c55e;opacity:0.7}
   .close-hint{position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;padding:4px}
 
+  /* Name progress display */
+  .name-progress{display:flex;gap:8px;margin:8px 0;justify-content:center}
+  .name-slot{width:42px;height:42px;border-radius:10px;border:2px dashed #c7ccff;display:grid;place-items:center;font-weight:800;color:#c7ccff;background:#fff;transition:all 0.3s ease}
+  .name-slot.filled{border-color:#66e6a6;color:#2c9b6f;background:#eafff4}
+
   /* Responsive */
   @media (max-width:820px){
     .play{grid-template-columns:1fr}
     .hint-btn{font-size:12px;padding:6px 10px;margin-left:8px}
     .balloon{font-size:28px;}
     .star{font-size:24px;}
+    .letter-grid{grid-template-columns:repeat(6,1fr);}
   }
 </style>
 </head>
@@ -264,8 +220,9 @@
       <div class="star" style="left:70%;top:15%" data-star>✨</div>
       <div class="star" style="left:85%;top:10%" data-star>⭐</div>
 
-      <!-- Island with ground, prominent door, and character -->
+      <!-- Island with ground and character -->
       <div class="island">        
+        <div class="ground"></div>
         <div class="buddy">
           <div class="face">🦄</div>
           <div class="bubble">I'm Luna! Find all 6 surprises to unlock your big party finale! Click the hint button if you need help! 💫</div>
@@ -276,7 +233,7 @@
 
   <section class="panel" aria-label="Get well soon">
     <h2 style="margin:0 0 10px">💖 Get Well Soon, Aadhya!</h2>
-    <p style="margin:0 0 10px"> Tap the bandage to turn it into a rainbow to cure the cute little Teddy .</p>
+    <p style="margin:0 0 10px">Tap the bandage to turn it into a rainbow to cure the cute little Teddy.</p>
     <div class="heal">
       <div class="bandage" id="bandage" role="button" aria-label="Magic bandage">🩹 Magic Bandage</div>
       <div class="teddy" id="teddy" aria-live="polite">🧸</div>
@@ -296,10 +253,11 @@
     </div>
 
     <div class="box">
-      <h3 style="margin-top:0">🌈 Name Puzzle + Hidden Cupcake</h3>
-      <p>Type your name on the keyboard: <b>A A D H Y A</b></p>
-      <div id="slots" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"></div>
-      <div style="font-size:48px;cursor:pointer" id="moon" role="button" aria-label="Moon">🌙</div>
+      <h3 style="margin-top:0">🌈 Letter Hunt + Hidden Cupcake</h3>
+      <p>Click the letters to spell: <b>A A D H Y A</b></p>
+      <div class="name-progress" id="nameProgress"></div>
+      <div class="letter-grid" id="letterGrid"></div>
+      <div style="font-size:48px;cursor:pointer;margin-top:12px" id="moon" role="button" aria-label="Moon">🌙</div>
       <div id="cupcake" style="display:none;font-size:32px;margin-top:8px">🧁 Surprise cupcake!</div>
     </div>
   </section>
@@ -309,7 +267,7 @@
     <div class="tag" id="t2">Stars</div>
     <div class="tag" id="t3">Bandage</div>
     <div class="tag" id="t4">Sticker → Gift</div>
-    <div class="tag" id="t5">Name</div>
+    <div class="tag" id="t5">Letters</div>
     <div class="tag" id="t6">Cupcake</div>
   </section>
 
@@ -324,7 +282,7 @@
   <div class="card">
     <h2 id="mtitle">🎉 Hooray, Aadhya! You found everything! 🎉</h2>
     <p>Make a wish and blow out the candles…</p>
-    <div class="cake">🎂🕯️🕯️🕯️</div>
+    <div class="cake">🎂🕯🕯🕯</div>
     <p style="margin:12px 0 18px">Once again a very happy birthday and get well soon aadhya papa. 💗</p>
     <button class="btn" id="again">Celebrate again</button>
   </div>
@@ -344,12 +302,13 @@
       <li id="hint2"><span>✨</span> Click the twinkling stars scattered above</li>
       <li id="hint3"><span>🩹</span> Tap the magic bandage to make it rainbow</li>
       <li id="hint4"><span>🦄</span> Drag the unicorn sticker into the gift box</li>
-      <li id="hint5"><span>⌨️</span> Type "AADHYA" on your keyboard</li>
+      <li id="hint5"><span>🔤</span> Click the letters to spell "AADHYA"</li>
       <li id="hint6"><span>🌙</span> Click the moon to reveal a hidden cupcake</li>
     </ul>
     <p style="font-size:14px;color:#666;margin-top:16px">💫 Complete all 6 to unlock the birthday celebration!</p>
   </div>
 </div>
+
 <script>
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -560,7 +519,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-
   // 3. BANDAGE - Click to transform into rainbow
   const bandage = $('#bandage');
   const teddy = $('#teddy');
@@ -682,69 +640,125 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // 6. NAME PUZZLE - Type AADHYA
-  const target = "AADHYA";
-  const slots = $('#slots');
-  const letters = target.split('');
-  
-  // Create letter slots
-  letters.forEach((letter, i) => {
-    const slot = document.createElement('div');
-    slot.textContent = letter;
-    slot.style.cssText = `
-      width:42px;height:42px;border-radius:10px;border:2px dashed #c7ccff;
-      display:grid;place-items:center;font-weight:800;color:#c7ccff;
-      background:#fff;transition:all 0.3s ease;
-    `;
-    slots.appendChild(slot);
-  });
-  
-  let nameProgress = 0;
-  
-  document.addEventListener('keydown', function(e) {
-    const key = (e.key || '').toUpperCase();
+  // 5. LETTER CLICKING SYSTEM - Spell AADHYA
+  const targetName = "AADHYA";
+  const nameProgress = $('#nameProgress');
+  const letterGrid = $('#letterGrid');
+  let nameIndex = 0;
+
+  // Create name progress display
+  function createNameSlots() {
+    nameProgress.innerHTML = '';
+    targetName.split('').forEach((letter, i) => {
+      const slot = document.createElement('div');
+      slot.className = 'name-slot';
+      slot.textContent = letter;
+      slot.id = `slot-${i}`;
+      nameProgress.appendChild(slot);
+    });
+  }
+
+  // Create letter grid with required letters + extras
+  function createLetterGrid() {
+    const requiredLetters = ['A', 'A', 'D', 'H', 'Y', 'A'];
+    const extraLetters = ['B', 'C', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Z'];
     
-    if(key === letters[nameProgress]) {
-      console.log('✅ Correct letter:', key, 'at position', nameProgress);
+    // Mix required letters with random extras
+    const allLetters = [...requiredLetters, ...extraLetters.sort(() => Math.random() - 0.5).slice(0, 12)];
+    const shuffledLetters = allLetters.sort(() => Math.random() - 0.5);
+    
+    letterGrid.innerHTML = '';
+    
+    shuffledLetters.forEach(letter => {
+      const btn = document.createElement('button');
+      btn.className = 'letter-btn';
+      btn.textContent = letter;
+      btn.onclick = () => handleLetterClick(letter, btn);
+      letterGrid.appendChild(btn);
+    });
+  }
+
+  function handleLetterClick(letter, btn) {
+    if(btn.classList.contains('used') || state.name) return;
+    
+    const expectedLetter = targetName[nameIndex];
+    
+    if(letter === expectedLetter) {
+      console.log('✅ Correct letter:', letter, 'at position', nameIndex);
       
-      const slot = slots.children[nameProgress];
-      slot.style.borderColor = '#66e6a6';
-      slot.style.color = '#2c9b6f';
-      slot.style.background = '#eafff4';
+      // Mark button as used
+      btn.classList.add('used');
+      btn.disabled = true;
       
-      nameProgress++;
-      tone(700 + nameProgress * 40, 0.1, 'sine');
+      // Fill the slot
+      const slot = $(`#slot-${nameIndex}`);
+      slot.classList.add('filled');
       
-      if(nameProgress === letters.length) {
+      // Play sound
+      tone(700 + nameIndex * 50, 0.1, 'sine');
+      
+      nameIndex++;
+      
+      if(nameIndex === targetName.length) {
         console.log('🎉 Name completed!');
         state.name = true;
         mark(4, true);
-        confetti(slots.getBoundingClientRect().left + 100, slots.getBoundingClientRect().top, 100);
+        
+        // Disable all remaining buttons
+        Array.from(letterGrid.children).forEach(b => {
+          if(!b.classList.contains('used')) {
+            b.disabled = true;
+            b.style.opacity = '0.5';
+          }
+        });
+        
+        confetti(nameProgress.getBoundingClientRect().left + 150, nameProgress.getBoundingClientRect().top, 100);
       }
       
-    } else if(/^[A-Z]$/.test(key)) {
-      console.log('❌ Wrong letter:', key, 'expected:', letters[nameProgress]);
+    } else {
+      console.log('❌ Wrong letter:', letter, 'expected:', expectedLetter);
       
-      // Reset progress if wrong letter (unless it's 'A' starting over)
-      nameProgress = (key === 'A') ? 1 : 0;
+      // Flash wrong animation
+      btn.classList.add('wrong');
+      setTimeout(() => btn.classList.remove('wrong'), 300);
       
-      Array.from(slots.children).forEach((el, idx) => {
-        if(idx < nameProgress) {
-          el.style.borderColor = '#66e6a6';
-          el.style.color = '#2c9b6f';
-          el.style.background = '#eafff4';
-        } else {
-          el.style.borderColor = '#c7ccff';
-          el.style.color = '#c7ccff';
-          el.style.background = '#fff';
-        }
-      });
-      
-      tone(350, 0.08, 'sine');
+      // Reset progress if wrong letter (unless it's 'A' and we can restart)
+      if(letter === 'A') {
+        // Reset all slots
+        Array.from(nameProgress.children).forEach(slot => slot.classList.remove('filled'));
+        
+        // Re-enable all used buttons except this one
+        Array.from(letterGrid.children).forEach(b => {
+          if(b !== btn) {
+            b.classList.remove('used');
+            b.disabled = false;
+          }
+        });
+        
+        // Mark this button as used and first slot as filled
+        btn.classList.add('used');
+        btn.disabled = true;
+        $('#slot-0').classList.add('filled');
+        nameIndex = 1;
+        tone(700, 0.1, 'sine');
+      } else {
+        // Complete reset
+        nameIndex = 0;
+        Array.from(nameProgress.children).forEach(slot => slot.classList.remove('filled'));
+        Array.from(letterGrid.children).forEach(b => {
+          b.classList.remove('used');
+          b.disabled = false;
+        });
+        tone(350, 0.08, 'sine');
+      }
     }
-  });
+  }
 
-  // 7. CUPCAKE - Click moon to reveal
+  // Initialize name puzzle
+  createNameSlots();
+  createLetterGrid();
+
+  // 6. CUPCAKE - Click moon to reveal
   const moon = $('#moon');
   const cupcakeDiv = $('#cupcake');
   
@@ -800,6 +814,7 @@ document.addEventListener('DOMContentLoaded', function() {
       hintModal.setAttribute('aria-hidden', 'true');
     }
   });
+
   // FINAL CELEBRATION
   const modal = $('#modal');
   const againBtn = $('#again');
@@ -840,14 +855,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initialize audio on first interaction
   document.addEventListener('click', initAudio, { once: true });
-  document.addEventListener('keydown', initAudio, { once: true });
   
   // Initial update
   update();
   
   console.log('🎮 All event listeners attached!');
 });
-  
 </script>
 </body>
 </html>
