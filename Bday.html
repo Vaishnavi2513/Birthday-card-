@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aadhya's Magical Birthday & Get‑Well Card</title>
+<style>
+  :root{
+    --pink:#ff98c9; --rose:#ff7aa2; --violet:#8f8cff; --sky:#9ee7ff; --mint:#b7ffd6; --sun:#ffd36e; --lav:#e8e5ff; --ink:#25324a; --bg:#fff7fb;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#eaf7ff);} 
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Helvetica,Arial,sans-serif;color:var(--ink);} 
+  .wrap{min-height:100%;display:flex;flex-direction:column}
+  header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.75);backdrop-filter:blur(6px);box-shadow:0 6px 24px rgba(0,0,0,.06);}
+  .bar{max-width:1100px;margin:auto;padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+  h1{margin:0;font-size:clamp(22px,3.5vw,34px)}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#fff;border:1px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.05);font-weight:600}
+  .progress{height:8px;background:#e6ecff;border-radius:999px;overflow:hidden}
+  .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--rose),var(--violet));width:0%;transition:width 0.5s ease}
+
+  /* Scene */
+  .scene{position:relative;max-width:1100px;margin:20px auto;padding:12px 16px;flex:1;width:100%}
+  .sky{position:relative;border-radius:24px;background:linear-gradient(180deg,#c8ebff 0%, #fdfcff 60%);overflow:hidden;box-shadow:0 20px 60px rgba(22,27,45,.08);min-height:400px;}
+  .sky:before{content:"";position:absolute;inset:-40% -20% auto -20%;height:70%;background:radial-gradient(1200px 400px at 50% -10%,rgba(255,255,255,.8),transparent);}
+
+  /* Floating clouds */
+  .cloud{position:absolute;background:#fff;border-radius:40px;box-shadow:0 10px 30px rgba(0,0,0,.05);opacity:.95}
+  .cloud:after,.cloud:before{content:"";position:absolute;background:#fff;border-radius:50%}
+  .cloud:before{width:60%;height:120%;left:-15%;top:-40%}
+  .cloud:after{width:80%;height:100%;right:-20%;top:-20%}
+  .c1{left:6%;top:10%;width:180px;height:70px;animation:float 12s ease-in-out infinite}
+  .c2{left:60%;top:16%;width:220px;height:80px;animation:float 14s ease-in-out infinite -3s}
+  .c3{left:30%;top:4%;width:160px;height:60px;animation:float 16s ease-in-out infinite -7s}
+  @keyframes float{50%{transform:translateY(-8px)} }
+
+  /* Fixed Balloons - properly spaced and floating */
+  .balloon {
+    position:absolute;
+    font-size:32px;
+    cursor:pointer;
+    z-index:4;
+    transition:all 0.3s ease;
+    animation:balloonFloat 3s ease-in-out infinite;
+  }
+  .balloon:hover {
+    transform:scale(1.2);
+  }
+  .balloon.popped {
+    transform:scale(0) rotate(180deg);
+    opacity:0;
+  }
+  .b1 { left:10%; top:25%; animation-delay:0s; }
+  .b2 { left:25%; top:35%; animation-delay:-1s; }
+  .b3 { left:45%; top:20%; animation-delay:-2s; }
+  .b4 { left:65%; top:30%; animation-delay:-0.5s; }
+  .b5 { left:80%; top:25%; animation-delay:-1.5s; }
+  .b6 { left:35%; top:45%; animation-delay:-2.5s; }
+  
+  @keyframes balloonFloat {
+    0%, 100% { transform:translateY(0px) rotate(-2deg); }
+    50% { transform:translateY(-12px) rotate(2deg); }
+  }
+
+  /* Enhanced Stars - more visible and glowing */
+  .star {
+    position:absolute;
+    font-size:28px;
+    cursor:pointer;
+    z-index:6;
+    color:#fff;
+    text-shadow:
+      0 0 5px #ffd700,
+      0 0 10px #ffd700,
+      0 0 15px #fff,
+      0 0 20px #fff;
+    animation:starTwinkle 2s ease-in-out infinite;
+    transition:all 0.3s ease;
+  }
+  .star:hover {
+    transform:scale(1.3);
+    text-shadow:
+      0 0 8px #ffd700,
+      0 0 15px #ffd700,
+      0 0 25px #fff,
+      0 0 35px #fff;
+  }
+  .star.collected {
+    transform:scale(0) rotate(360deg);
+    opacity:0;
+  }
+  
+  @keyframes starTwinkle {
+    0%, 100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.7; transform:scale(1.1); }
+  }
+
+  /* Island with ground and enhanced door */
+  .island {
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:180px;
+    z-index:3;
+  }
+  
+  .ground {
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:40px;
+    background:linear-gradient(180deg, #4ade80, #22c55e);
+    border-radius:0 0 24px 24px;
+  }
+
+  /* Enhanced Door - larger and more prominent */
+  .door {
+    position:absolute;
+    left:60px;
+    bottom:40px;
+    width:120px;
+    height:160px;
+    background:linear-gradient(180deg,#8b5cf6,#7c3aed);
+    border:4px solid #fff;
+    border-radius:12px;
+    z-index:10;
+    cursor:pointer;
+    box-shadow:0 8px 25px rgba(139,92,246,0.4);
+    transition:all 0.3s ease;
+  }
+  .door:hover {
+    transform:scale(1.05);
+    box-shadow:0 12px 35px rgba(139,92,246,0.6);
+  }
+  .door:before {
+    content:"🚪";
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:40px;
+  }
+  .door.open {
+    background:linear-gradient(180deg,#fbbf24,#f59e0b);
+    box-shadow:0 12px 35px rgba(251,191,36,0.4);
+  }
+  .door.open:before {
+    content:"✨";
+    font-size:48px;
+  }
+
+  /* Welcome message */
+  .welcome {
+    position:absolute;
+    left:200px;
+    bottom:120px;
+    background:#fff;
+    padding:12px 16px;
+    border-radius:16px;
+    border:2px solid #fbbf24;
+    box-shadow:0 8px 25px rgba(0,0,0,0.15);
+    font-weight:600;
+    color:var(--ink);
+    opacity:0;
+    transform:scale(0.8);
+    transition:all 0.3s ease;
+    z-index:11;
+  }
+  .welcome.show {
+    opacity:1;
+    transform:scale(1);
+  }
+
+  /* Friendly character */
+  .buddy{position:absolute;right:40px;bottom:40px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:10;}
+  .buddy .face{width:74px;height:74px;border-radius:50%;background:linear-gradient(180deg,#ffd6e8,#ffc1dc);box-shadow:0 10px 18px rgba(0,0,0,.15);display:grid;place-items:center;font-size:34px}
+  .bubble{max-width:210px;background:#fff;border-radius:16px;padding:10px 12px;border:1px solid #ffd6e8;box-shadow:0 10px 24px rgba(0,0,0,.08)}
+
+  /* Get well panel */
+  .panel{max-width:1100px;margin:18px auto;padding:16px;background:linear-gradient(180deg,#fff,#fff8fd);border:1px solid #ffe2f1;border-radius:24px;box-shadow:0 16px 50px rgba(255,122,162,.18)}
+  .heal{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .teddy{font-size:64px;transition:transform 0.5s ease}
+  .bandage{display:inline-flex;gap:6px;align-items:center;background:#ffe7ef;border:2px dashed #ff99be;border-radius:999px;padding:8px 12px;cursor:pointer;user-select:none;transition:all 0.4s ease}
+  .bandage:hover{transform:scale(1.05)}
+  .bandage.rainbow{background:linear-gradient(90deg,#ff9cf3,#8f8cff,#9ee7ff,#b7ffd6,#ffd36e);border-style:solid;border-color:#ff69e0;color:#222}
+
+  /* Draggable sticker + gift */
+  .play{max-width:1100px;margin:0 auto 30px;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:0 16px}
+  .box{background:#ffffffc9;border:1px solid #eef2ff;border-radius:20px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+  .giftzone{position:relative;height:160px;border:2px dashed #b79cff;border-radius:16px;display:grid;place-items:center;background:repeating-linear-gradient(45deg, #f7f3ff, #f7f3ff 10px, #faf7ff 10px, #faf7ff 20px);transition:all 0.3s ease}
+  .giftzone.success{border-color:#66e6a6;background:#f0fff7}
+  .gift{font-size:40px;}
+  .sticker{width:90px;height:90px;border-radius:16px;background:linear-gradient(180deg,#fff,#ffe6f5);display:grid;place-items:center;cursor:grab;touch-action:none;user-select:none;box-shadow:0 10px 18px rgba(0,0,0,.12);transition:all 0.3s ease;position:relative;z-index:1}
+  .sticker:hover{transform:scale(1.05)}
+  .sticker.dragging{cursor:grabbing;transform:scale(1.1);z-index:10;box-shadow:0 15px 30px rgba(0,0,0,.2)}
+
+  /* Puzzle tracker */
+  .tracker{max-width:1100px;margin:0 auto 22px;display:flex;flex-wrap:wrap;gap:10px;padding:0 16px}
+  .tag{padding:6px 10px;border-radius:999px;border:1px solid #e4e7ff;background:#fff;font-weight:600;transition:all 0.3s ease}
+  .tag.done{background:#e8fff2;border-color:#b6ffd4;transform:scale(1.05)}
+
+  /* Final modal */
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,20,30,.6);z-index:1000;backdrop-filter:blur(4px)}
+  .modal.show{display:flex}
+  .card{max-width:560px;background:#fff;border-radius:24px;padding:22px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4);transform:scale(0.8);transition:transform 0.3s ease}
+  .modal.show .card{transform:scale(1)}
+  .cake{font-size:64px;}
+  .btn{border:0;background:linear-gradient(90deg,var(--rose),var(--violet));color:#fff;border-radius:14px;padding:10px 16px;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(143,140,255,.35);transition:transform 0.2s ease}
+  .btn:hover{transform:translateY(-2px)}
+
+  /* Hint system */
+  .hint-btn{border:0;background:linear-gradient(90deg,var(--sun),#ffa726);color:#fff;border-radius:12px;padding:8px 12px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(255,193,7,.3);transition:all 0.2s ease;font-size:14px;margin-left:12px}
+  .hint-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(255,193,7,.4)}
+  .hint-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,20,30,.7);z-index:1001;backdrop-filter:blur(4px)}
+  .hint-modal.show{display:flex}
+  .hint-card{max-width:500px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 25px 70px rgba(0,0,0,.3);transform:scale(0.9);transition:transform 0.3s ease}
+  .hint-modal.show .hint-card{transform:scale(1)}
+  .hint-list{list-style:none;padding:0;margin:16px 0}
+  .hint-list li{padding:8px 12px;margin:6px 0;background:linear-gradient(90deg,#f8f9ff,#fff);border-left:4px solid var(--violet);border-radius:8px;display:flex;align-items:center;gap:10px}
+  .hint-list li.found{background:linear-gradient(90deg,#f0fff4,#e8fff2);border-left-color:#22c55e;opacity:0.7}
+  .close-hint{position:absolute;top:12px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;padding:4px}
+
+  /* Responsive */
+  @media (max-width:820px){
+    .play{grid-template-columns:1fr}
+    .hint-btn{font-size:12px;padding:6px 10px;margin-left:8px}
+    .balloon{font-size:28px;}
+    .star{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="bar">
+      <h1>🎂 Happy Birthday, <span style="color:var(--rose)">Aadhya</span>!</h1>
+      <div class="chip">Find the surprises → <span id="count">0</span>/6</div>
+    </div>
+    <div class="bar" style="padding-top:0">
+      <div class="progress" style="flex:1"><i id="prog"></i></div>
+      <button class="hint-btn" id="hintBtn">💡 Need a hint?</button>
+    </div>
+  </header>
+
+  <main class="scene">
+    <section class="sky" aria-label="Magical play sky">
+      <div class="cloud c1"></div>
+      <div class="cloud c2"></div>
+      <div class="cloud c3"></div>
+
+      <!-- Balloons to pop - properly positioned -->
+      <div class="balloon b1" data-balloon>🎈</div>
+      <div class="balloon b2" data-balloon>🎈</div>
+      <div class="balloon b3" data-balloon>🎈</div>
+      <div class="balloon b4" data-balloon>🎈</div>
+      <div class="balloon b5" data-balloon>🎈</div>
+      <div class="balloon b6" data-balloon>🎈</div>
+
+      <!-- Enhanced twinkling stars -->
+      <div class="star" style="left:15%;top:12%" data-star>✨</div>
+      <div class="star" style="left:35%;top:8%" data-star>⭐</div>
+      <div class="star" style="left:70%;top:15%" data-star>✨</div>
+      <div class="star" style="left:85%;top:10%" data-star>⭐</div>
+
+      <!-- Island with ground, prominent door, and character -->
+      <div class="island">        
+        <div class="buddy">
+          <div class="face">🦄</div>
+          <div class="bubble">I'm Luna! Find all 6 surprises to unlock your big party finale! Click the hint button if you need help! 💫</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="panel" aria-label="Get well soon">
+    <h2 style="margin:0 0 10px">💖 Get Well Soon, Aadhya!</h2>
+    <p style="margin:0 0 10px"> Tap the bandage to turn it into a rainbow to cure the cute little Teddy .</p>
+    <div class="heal">
+      <div class="bandage" id="bandage" role="button" aria-label="Magic bandage">🩹 Magic Bandage</div>
+      <div class="teddy" id="teddy" aria-live="polite">🧸</div>
+      <div id="rainbow" style="flex:1;height:10px;border-radius:999px;background:#eee;transition:all 0.6s ease"></div>
+    </div>
+  </section>
+
+  <section class="play" aria-label="Play area">
+    <div class="box">
+      <h3 style="margin-top:0">🎁 Drag the unicorn sticker into the gift box</h3>
+      <div class="grid" style="display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center">
+        <div class="sticker" id="sticker" aria-grabbed="false">🦄</div>
+        <div class="giftzone" id="drop">
+          <div class="gift">🎁</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3 style="margin-top:0">🌈 Name Puzzle + Hidden Cupcake</h3>
+      <p>Type your name on the keyboard: <b>A A D H Y A</b></p>
+      <div id="slots" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0"></div>
+      <div style="font-size:48px;cursor:pointer" id="moon" role="button" aria-label="Moon">🌙</div>
+      <div id="cupcake" style="display:none;font-size:32px;margin-top:8px">🧁 Surprise cupcake!</div>
+    </div>
+  </section>
+
+  <section class="tracker" aria-label="Progress">
+    <div class="tag" id="t1">Balloons</div>
+    <div class="tag" id="t2">Stars</div>
+    <div class="tag" id="t3">Bandage</div>
+    <div class="tag" id="t4">Sticker → Gift</div>
+    <div class="tag" id="t5">Name</div>
+    <div class="tag" id="t6">Cupcake</div>
+  </section>
+
+  <footer class="bar" style="margin-top:auto">
+    <div>Made with love, sparkles & smiles ✨</div>
+    <div>Tip: explore! many things wiggle or twinkle when they want a tap 💡</div>
+  </footer>
+</div>
+
+<!-- Celebration modal -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle" aria-hidden="true">
+  <div class="card">
+    <h2 id="mtitle">🎉 Hooray, Aadhya! You found everything! 🎉</h2>
+    <p>Make a wish and blow out the candles…</p>
+    <div class="cake">🎂🕯️🕯️🕯️</div>
+    <p style="margin:12px 0 18px">Once again a very happy birthday and get well soon aadhya papa. 💗</p>
+    <button class="btn" id="again">Celebrate again</button>
+  </div>
+</div>
+
+<!-- Confetti canvas -->
+<canvas id="fx" style="position:fixed;inset:0;pointer-events:none;z-index:999"></canvas>
+
+<!-- Hint modal -->
+<div class="hint-modal" id="hintModal" role="dialog" aria-modal="true" aria-labelledby="hinttitle" aria-hidden="true">
+  <div class="hint-card">
+    <button class="close-hint" id="closeHint" aria-label="Close hints">×</button>
+    <h3 id="hinttitle">💡 Surprise Hunt Hints</h3>
+    <p>Here are clues to help you find all 6 magical surprises:</p>
+    <ul class="hint-list">
+      <li id="hint1"><span>🎈</span> Pop the colorful balloons floating in the sky</li>
+      <li id="hint2"><span>✨</span> Click the twinkling stars scattered above</li>
+      <li id="hint3"><span>🩹</span> Tap the magic bandage to make it rainbow</li>
+      <li id="hint4"><span>🦄</span> Drag the unicorn sticker into the gift box</li>
+      <li id="hint5"><span>⌨️</span> Type "AADHYA" on your keyboard</li>
+      <li id="hint6"><span>🌙</span> Click the moon to reveal a hidden cupcake</li>
+    </ul>
+    <p style="font-size:14px;color:#666;margin-top:16px">💫 Complete all 6 to unlock the birthday celebration!</p>
+  </div>
+</div>
+<script>
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🎂 Birthday card initialized!');
+  
+  // Game state tracking
+  const state = {
+    balloons: 0,
+    stars: 0,
+    bandage: false,
+    sticker: false,
+    name: false,
+    cupcake: false,
+    goals: 6
+  };
+
+  // Helper functions
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  
+  const countEl = $('#count');
+  const prog = $('#prog');
+  const tags = ['#t1','#t2','#t3','#t4','#t5','#t6'].map($);
+
+  // Audio context setup
+  let audioContext = null;
+  
+  function initAudio() {
+    if (!audioContext) {
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        console.log('🎵 Audio initialized');
+      } catch (e) {
+        console.log('Audio not available');
+      }
+    }
+    return audioContext;
+  }
+
+  function tone(freq = 600, time = 0.15, type = 'sine', vol = 0.08) {
+    try {
+      const audio = initAudio();
+      if (!audio) return;
+      
+      const o = audio.createOscillator();
+      const g = audio.createGain();
+      
+      o.type = type;
+      o.frequency.value = freq;
+      g.gain.value = vol;
+      
+      o.connect(g);
+      g.connect(audio.destination);
+      
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + time);
+      o.stop(audio.currentTime + time);
+    } catch (e) {
+      console.log('Audio error:', e.message);
+    }
+  }
+
+  // Confetti system
+  const canvas = $('#fx');
+  const ctx = canvas.getContext('2d');
+  let confettiBits = [];
+  let rafId = null;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  window.addEventListener('resize', resize);
+  resize();
+
+  function confetti(splashX = window.innerWidth/2, splashY = window.innerHeight/2, count = 120) {
+    console.log('🎉 Confetti at', splashX, splashY);
+    
+    for(let i = 0; i < count; i++) {
+      confettiBits.push({
+        x: splashX,
+        y: splashY,
+        vx: (Math.random() - 0.5) * 8,
+        vy: Math.random() * -7 - 3,
+        size: Math.random() * 5 + 2,
+        rot: Math.random() * 6.28,
+        vr: (Math.random() - 0.5) * 0.4,
+        color: `hsl(${Math.random() * 360}, 85%, 65%)`
+      });
+    }
+    
+    if(!rafId) animate();
+  }
+
+  function animate() {
+    rafId = requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    confettiBits.forEach(p => {
+      p.vy += 0.15;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      ctx.restore();
+    });
+    
+    confettiBits = confettiBits.filter(p => p.y < canvas.height + 50);
+    
+    if(confettiBits.length === 0) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  // Progress tracking
+  function mark(idx, completed) {
+    if(completed && !tags[idx].classList.contains('done')) {
+      tags[idx].classList.add('done');
+      console.log('✅ Task completed:', idx + 1);
+      update();
+    }
+  }
+
+  function update() {
+    const done = +!!state.balloons + +!!state.stars + +!!state.bandage + +!!state.sticker + +!!state.name + +!!state.cupcake;
+    countEl.textContent = done;
+    prog.style.width = (done / state.goals * 100) + '%';
+    
+    // Update hint modal
+    updateHints();
+    
+    console.log('📊 Progress:', done, '/', state.goals);
+    
+    if(done === state.goals) {
+      setTimeout(showFinal, 800);
+    }
+  }
+
+  // 1. BALLOONS - Click to pop with confetti
+  const balloons = $$("[data-balloon]");
+  console.log('🎈 Found balloons:', balloons.length);
+  
+  balloons.forEach((balloon, index) => {
+    balloon.addEventListener('click', function(e) {
+      console.log('🎈 Balloon clicked:', index);
+      
+      if(balloon.classList.contains('popped')) {
+        console.log('Already popped');
+        return;
+      }
+      
+      // Pop animation
+      balloon.classList.add('popped');
+      
+      // Sound and confetti
+      tone(800 + Math.random() * 200, 0.1, 'square');
+      
+      const rect = balloon.getBoundingClientRect();
+      confetti(rect.left + rect.width/2, rect.top + rect.height/2, 50);
+      
+      // Track progress
+      state.balloons++;
+      console.log('Balloons popped:', state.balloons, '/', balloons.length);
+      
+      if(state.balloons === balloons.length) {
+        mark(0, true);
+      }
+    });
+  });
+
+  // 2. STARS - Click to collect
+  const stars = $$("[data-star]");
+  console.log('⭐ Found stars:', stars.length);
+  
+  stars.forEach((star, index) => {
+    star.addEventListener('click', function(e) {
+      console.log('⭐ Star clicked:', index);
+      
+      if(star.classList.contains('collected')) {
+        console.log('Already collected');
+        return;
+      }
+      
+      // Collect animation
+      star.classList.add('collected');
+      
+      // Sound
+      tone(1000 + index * 100, 0.12, 'triangle');
+      
+      // Track progress
+      state.stars++;
+      console.log('Stars collected:', state.stars, '/', stars.length);
+      
+      if(state.stars === stars.length) {
+        mark(1, true);
+        confetti(window.innerWidth * 0.75, window.innerHeight * 0.15, 80);
+      }
+    });
+  });
+
+
+  // 3. BANDAGE - Click to transform into rainbow
+  const bandage = $('#bandage');
+  const teddy = $('#teddy');
+  const rainbow = $('#rainbow');
+  
+  bandage.addEventListener('click', function(e) {
+    console.log('🩹 Bandage clicked');
+    
+    const isRainbow = bandage.classList.contains('rainbow');
+    
+    if(isRainbow) {
+      // Reset to bandage
+      bandage.classList.remove('rainbow');
+      rainbow.style.height = '10px';
+      rainbow.style.background = '#eee';
+      teddy.style.transform = 'scale(1)';
+    } else {
+      // Transform to rainbow
+      bandage.classList.add('rainbow');
+      rainbow.style.height = '18px';
+      rainbow.style.background = 'linear-gradient(90deg,#ff9cf3,#8f8cff,#9ee7ff,#b7ffd6,#ffd36e)';
+      teddy.style.transform = 'scale(1.15) rotate(-3deg)';
+      
+      // Sound and confetti
+      tone(660, 0.2, 'sine');
+      confetti(window.innerWidth * 0.4, rainbow.getBoundingClientRect().top, 90);
+      
+      // Mark completed
+      if(!state.bandage) {
+        state.bandage = true;
+        mark(2, true);
+      }
+    }
+  });
+
+  // 4. DRAG & DROP - Sticker to gift box
+  const sticker = $('#sticker');
+  const dropZone = $('#drop');
+  let dragging = false;
+  let startPos = { x: 0, y: 0 };
+  let offset = { x: 0, y: 0 };
+
+  function resetSticker() {
+    sticker.style.position = 'relative';
+    sticker.style.left = '0px';
+    sticker.style.top = '0px';
+    sticker.style.zIndex = '1';
+    sticker.classList.remove('dragging');
+  }
+
+  sticker.addEventListener('pointerdown', function(e) {
+    if(state.sticker) return;
+    
+    console.log('🦄 Sticker drag start');
+    e.preventDefault();
+    
+    dragging = true;
+    sticker.setPointerCapture(e.pointerId);
+    sticker.classList.add('dragging');
+    
+    const rect = sticker.getBoundingClientRect();
+    offset.x = e.clientX - rect.left;
+    offset.y = e.clientY - rect.top;
+    startPos.x = rect.left;
+    startPos.y = rect.top;
+    
+    tone(450, 0.06);
+  });
+
+  sticker.addEventListener('pointermove', function(e) {
+    if(!dragging) return;
+    e.preventDefault();
+    
+    const newX = e.clientX - offset.x - startPos.x;
+    const newY = e.clientY - offset.y - startPos.y;
+    
+    sticker.style.position = 'relative';
+    sticker.style.left = newX + 'px';
+    sticker.style.top = newY + 'px';
+  });
+
+  sticker.addEventListener('pointerup', function(e) {
+    if(!dragging) return;
+    e.preventDefault();
+    
+    console.log('🦄 Sticker drop');
+    dragging = false;
+    sticker.releasePointerCapture(e.pointerId);
+    sticker.classList.remove('dragging');
+    
+    // Check if dropped in gift zone
+    const stickerRect = sticker.getBoundingClientRect();
+    const dropRect = dropZone.getBoundingClientRect();
+    
+    const overlap = !(stickerRect.right < dropRect.left || 
+                     stickerRect.left > dropRect.right || 
+                     stickerRect.bottom < dropRect.top || 
+                     stickerRect.top > dropRect.bottom);
+    
+    if(overlap) {
+      console.log('🎁 Success! Sticker in gift zone');
+      
+      // Success styling
+      dropZone.classList.add('success');
+      sticker.style.opacity = '0.6';
+      sticker.style.pointerEvents = 'none';
+      
+      // Sound and confetti
+      tone(880, 0.15, 'triangle');
+      confetti(dropRect.left + dropRect.width/2, dropRect.top + dropRect.height/2, 100);
+      
+      // Mark completed
+      state.sticker = true;
+      mark(3, true);
+      
+    } else {
+      console.log('❌ Missed the gift zone');
+      resetSticker();
+    }
+  });
+
+  // 6. NAME PUZZLE - Type AADHYA
+  const target = "AADHYA";
+  const slots = $('#slots');
+  const letters = target.split('');
+  
+  // Create letter slots
+  letters.forEach((letter, i) => {
+    const slot = document.createElement('div');
+    slot.textContent = letter;
+    slot.style.cssText = `
+      width:42px;height:42px;border-radius:10px;border:2px dashed #c7ccff;
+      display:grid;place-items:center;font-weight:800;color:#c7ccff;
+      background:#fff;transition:all 0.3s ease;
+    `;
+    slots.appendChild(slot);
+  });
+  
+  let nameProgress = 0;
+  
+  document.addEventListener('keydown', function(e) {
+    const key = (e.key || '').toUpperCase();
+    
+    if(key === letters[nameProgress]) {
+      console.log('✅ Correct letter:', key, 'at position', nameProgress);
+      
+      const slot = slots.children[nameProgress];
+      slot.style.borderColor = '#66e6a6';
+      slot.style.color = '#2c9b6f';
+      slot.style.background = '#eafff4';
+      
+      nameProgress++;
+      tone(700 + nameProgress * 40, 0.1, 'sine');
+      
+      if(nameProgress === letters.length) {
+        console.log('🎉 Name completed!');
+        state.name = true;
+        mark(4, true);
+        confetti(slots.getBoundingClientRect().left + 100, slots.getBoundingClientRect().top, 100);
+      }
+      
+    } else if(/^[A-Z]$/.test(key)) {
+      console.log('❌ Wrong letter:', key, 'expected:', letters[nameProgress]);
+      
+      // Reset progress if wrong letter (unless it's 'A' starting over)
+      nameProgress = (key === 'A') ? 1 : 0;
+      
+      Array.from(slots.children).forEach((el, idx) => {
+        if(idx < nameProgress) {
+          el.style.borderColor = '#66e6a6';
+          el.style.color = '#2c9b6f';
+          el.style.background = '#eafff4';
+        } else {
+          el.style.borderColor = '#c7ccff';
+          el.style.color = '#c7ccff';
+          el.style.background = '#fff';
+        }
+      });
+      
+      tone(350, 0.08, 'sine');
+    }
+  });
+
+  // 7. CUPCAKE - Click moon to reveal
+  const moon = $('#moon');
+  const cupcakeDiv = $('#cupcake');
+  
+  moon.addEventListener('click', function(e) {
+    console.log('🌙 Moon clicked');
+    
+    if(state.cupcake) return;
+    
+    cupcakeDiv.style.display = 'block';
+    
+    // Sound and confetti
+    tone(760, 0.2, 'square');
+    const rect = moon.getBoundingClientRect();
+    confetti(rect.left + rect.width/2, rect.top + rect.height/2, 80);
+    
+    state.cupcake = true;
+    mark(5, true);
+  });
+
+  // HINT SYSTEM
+  const hintBtn = $('#hintBtn');
+  const hintModal = $('#hintModal');
+  const closeHint = $('#closeHint');
+  const hints = ['#hint1','#hint2','#hint3','#hint4','#hint5','#hint6'].map($);
+  
+  function updateHints() {
+    const completed = [!!state.balloons, !!state.stars, !!state.bandage, !!state.sticker, !!state.name, !!state.cupcake];
+    hints.forEach((hint, idx) => {
+      if(completed[idx]) {
+        hint.classList.add('found');
+      } else {
+        hint.classList.remove('found');
+      }
+    });
+  }
+  
+  hintBtn.addEventListener('click', function(e) {
+    console.log('💡 Hint button clicked');
+    hintModal.classList.add('show');
+    hintModal.setAttribute('aria-hidden', 'false');
+    updateHints();
+  });
+  
+  closeHint.addEventListener('click', function(e) {
+    hintModal.classList.remove('show');
+    hintModal.setAttribute('aria-hidden', 'true');
+  });
+  
+  // Close hint modal when clicking outside
+  hintModal.addEventListener('click', function(e) {
+    if(e.target === hintModal) {
+      hintModal.classList.remove('show');
+      hintModal.setAttribute('aria-hidden', 'true');
+    }
+  });
+  // FINAL CELEBRATION
+  const modal = $('#modal');
+  const againBtn = $('#again');
+  
+  function showFinal() {
+    console.log('🎉 FINAL CELEBRATION!');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    
+    // Massive confetti explosion
+    confetti(window.innerWidth/2, window.innerHeight/2, 300);
+    
+    // Play birthday melody
+    playBirthdayMelody();
+  }
+  
+  againBtn.addEventListener('click', function(e) {
+    console.log('🎂 Celebrate again!');
+    confetti(window.innerWidth/2, window.innerHeight/2, 250);
+    playBirthdayMelody();
+  });
+
+  // Birthday melody
+  function playBirthdayMelody() {
+    console.log('🎵 Playing birthday song');
+    
+    const melody = [
+      [523, 300], [523, 200], [587, 500], [523, 500], [698, 500], [659, 1000],
+      [523, 300], [523, 200], [587, 500], [523, 500], [784, 500], [698, 1000]
+    ];
+    
+    let time = 0;
+    melody.forEach(([freq, duration]) => {
+      setTimeout(() => tone(freq, duration/1000, 'sine', 0.07), time);
+      time += duration;
+    });
+  }
+
+  // Initialize audio on first interaction
+  document.addEventListener('click', initAudio, { once: true });
+  document.addEventListener('keydown', initAudio, { once: true });
+  
+  // Initial update
+  update();
+  
+  console.log('🎮 All event listeners attached!');
+});
+  
+</script>
+</body>
+</html>
